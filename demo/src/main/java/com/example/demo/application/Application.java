@@ -1,137 +1,81 @@
 package com.example.demo.application;
 
+import com.example.demo.dao.CabinetMetierImpl;
 import com.example.demo.models.Consultation;
 import com.example.demo.models.Medecin;
 import com.example.demo.models.Patient;
-import com.example.demo.dao.CabinetMetierImpl;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalTime;
 import java.util.List;
-import java.util.Scanner;
 
 public class Application {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        // Créer une instance de CabinetMetierImpl
         CabinetMetierImpl cabinetMetier = new CabinetMetierImpl();
 
-        while (true) {
-            System.out.println("===== MENU =====");
-            System.out.println("1. Ajouter un patient");
-            System.out.println("2. Lister les patients");
-            System.out.println("3. Rechercher un patient");
-            System.out.println("4. Ajouter un médecin");
-            System.out.println("5. Lister les médecins");
-            System.out.println("6. Ajouter une consultation");
-            System.out.println("7. Lister les consultations");
-            System.out.println("8. Quitter");
-            System.out.print("Choisissez une option : ");
+        // Tester l'ajout de patients
+        System.out.println("--- Test : Ajout de Patients ---");
+        Patient patient1 = new Patient("Dupont", "Jean", "AB12345", "0612345678", "jean.dupont@email.com", LocalDate.of(1980, 5, 15));
+        Patient patient2 = new Patient("Martin", "Sophie", "CD67890", "0687654321", "sophie.martin@email.com", LocalDate.of(1990, 8, 20));
+        
+        cabinetMetier.ajouterPatient(patient1);
+        cabinetMetier.ajouterPatient(patient2);
 
-            int choix = scanner.nextInt();
-            scanner.nextLine();  // Pour capturer le '\n' après le nombre
+        // Tester la liste des patients
+        System.out.println("\n--- Test : Liste des Patients ---");
+        List<Patient> patients = cabinetMetier.listerPatients();
+        patients.forEach(patient -> System.out.println(patient.getNom() + " " + patient.getPrenom()));
 
-            switch (choix) {
-                case 1:
-                    // Ajouter un patient
-                    System.out.print("Nom du patient : ");
-                    String nomPatient = scanner.nextLine();
-                    System.out.print("Prénom du patient : ");
-                    String prenomPatient = scanner.nextLine();
-                    System.out.print("CIN du patient : ");
-                    String cinPatient = scanner.nextLine();
-                    System.out.print("Téléphone du patient : ");
-                    String telPatient = scanner.nextLine();
-                    System.out.print("Email du patient : ");
-                    String emailPatient = scanner.nextLine();
-                    System.out.print("Date de naissance du patient (YYYY-MM-DD) : ");
-                    String dateNaissanceStr = scanner.nextLine();
+        // Tester la recherche de patients
+        System.out.println("\n--- Test : Recherche de Patients ---");
+        List<Patient> recherchePatients = cabinetMetier.rechercherPatients("Dupont");
+        recherchePatients.forEach(patient -> System.out.println(patient.getNom() + " " + patient.getPrenom()));
 
-                    // Convertir la chaîne en LocalDate
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                    LocalDate dateNaissance = LocalDate.parse(dateNaissanceStr, formatter);
+        // Tester l'ajout de médecins
+        System.out.println("\n--- Test : Ajout de Médecins ---");
+        Medecin medecin1 = new Medecin("Dr. Leroy", "Pierre", "pierre.leroy@cabinet.com", "0123456789");
+        Medecin medecin2 = new Medecin("Dr. Dubois", "Marie", "marie.dubois@cabinet.com", "0987654321");
+        
+        cabinetMetier.ajouterMedecin(medecin1);
+        cabinetMetier.ajouterMedecin(medecin2);
 
+        // Tester la liste des médecins
+        System.out.println("\n--- Test : Liste des Médecins ---");
+        List<Medecin> medecins = cabinetMetier.listerMedecins();
+        medecins.forEach(medecin -> System.out.println(medecin.getNom() + " " + medecin.getPrenom()));
 
-                    Patient patient = new Patient(nomPatient, prenomPatient, cinPatient, telPatient, emailPatient, dateNaissance);
-                    cabinetMetier.ajouterPatient(patient);
-                    break;
+        // Tester l'ajout de consultations
+        System.out.println("\n--- Test : Ajout de Consultations ---");
+        // Supposons que les patients et médecins ont été ajoutés avec des ID auto-générés
+        Consultation consultation1 = new Consultation(1, 1, LocalDate.now(), LocalTime.now(), "Consultation de routine", "RAS");
+        Consultation consultation2 = new Consultation(2, 2, LocalDate.now(), LocalTime.now(), "Suivi médical", "Prescription de tests");
+        
+        cabinetMetier.ajouterConsultation(consultation1);
+        cabinetMetier.ajouterConsultation(consultation2);
 
-                case 2:
-                    // Lister les patients
-                    List<Patient> patients = cabinetMetier.listerPatients();
-                    if (patients != null && !patients.isEmpty()) {
-                        patients.forEach(p -> System.out.println(p.getNom() + " " + p.getPrenom()));
-                    } else {
-                        System.out.println("Aucun patient trouvé.");
-                    }
-                    break;
+        // Tester la liste des consultations
+        System.out.println("\n--- Test : Liste des Consultations ---");
+        List<Consultation> consultations = cabinetMetier.listerConsultations();
+        consultations.forEach(consultation -> System.out.println("Consultation pour patient ID: " + consultation.getIdPatient() 
+                + ", Médecin ID: " + consultation.getIdMedecin()));
 
-                case 3:
-                    // Rechercher un patient
-                    System.out.print("Entrez un mot-clé pour rechercher un patient : ");
-                    String motCle = scanner.nextLine();
-                    List<Patient> patientsTrouves = cabinetMetier.rechercherPatients(motCle);
-                    if (patientsTrouves != null && !patientsTrouves.isEmpty()) {
-                        patientsTrouves.forEach(p -> System.out.println(p.getNom() + " " + p.getPrenom()));
-                    } else {
-                        System.out.println("Aucun patient trouvé pour le mot-clé : " + motCle);
-                    }
-                    break;
+        // Tester l'affichage des consultations d'un patient
+        System.out.println("\n--- Test : Consultations d'un Patient ---");
+        List<Consultation> consultationsPatient = cabinetMetier.afficherConsultationsPatient(1);
+        consultationsPatient.forEach(consultation -> System.out.println("Date: " + consultation.getDateConsultation() 
+                + ", Observations: " + consultation.getObservations()));
 
-                case 4:
-                    // Ajouter un médecin
-                    System.out.print("Nom du médecin : ");
-                    String nomMedecin = scanner.nextLine();
-                    System.out.print("Prénom du médecin : ");
-                    String prenomMedecin = scanner.nextLine();
-                    System.out.print("Email du médecin : ");
-                    String emailMedecin = scanner.nextLine();
-                    System.out.print("Téléphone du médecin : ");
-                    String telMedecin = scanner.nextLine();
+        // Tester l'affichage des consultations d'un médecin
+        System.out.println("\n--- Test : Consultations d'un Médecin ---");
+        List<Consultation> consultationsMedecin = cabinetMetier.afficherConsultationsMedecin(1);
+        consultationsMedecin.forEach(consultation -> System.out.println("Date: " + consultation.getDateConsultation() 
+                + ", Observations: " + consultation.getObservations()));
 
-                    Medecin medecin = new Medecin(nomMedecin, prenomMedecin, emailMedecin, telMedecin);
-                    cabinetMetier.ajouterMedecin(medecin);
-                    break;
-
-                case 5:
-                    // Lister les médecins
-                    List<Medecin> medecins = cabinetMetier.listerMedecins();
-                    if (medecins != null && !medecins.isEmpty()) {
-                        medecins.forEach(m -> System.out.println(m.getNom() + " " + m.getPrenom()));
-                    } else {
-                        System.out.println("Aucun médecin trouvé.");
-                    }
-                    break;
-
-                case 6:
-                    // Ajouter une consultation
-                    System.out.print("ID du patient pour la consultation : ");
-                    int idPatient = scanner.nextInt();
-                    System.out.print("ID du médecin pour la consultation : ");
-                    int idMedecin = scanner.nextInt();
-                    scanner.nextLine(); // Pour capturer le '\n' après les nombres
-
-                    Consultation consultation = new Consultation(idPatient, idMedecin);
-                    cabinetMetier.ajouterConsultation(consultation);
-                    break;
-
-                case 7:
-                    // Lister les consultations
-                    List<Consultation> consultations = cabinetMetier.listerConsultations();
-                    if (consultations != null && !consultations.isEmpty()) {
-                        consultations.forEach(c -> System.out.println("Consultation ID : " + c.getIdConsultation()));
-                    } else {
-                        System.out.println("Aucune consultation trouvée.");
-                    }
-                    break;
-
-                case 8:
-                    // Quitter
-                    System.out.println("Au revoir !");
-                    return;
-
-                default:
-                    System.out.println("Option invalide. Veuillez réessayer.");
-            }
-        }
+        // Test de suppression (optionnel)
+        System.out.println("\n--- Test : Suppression ---");
+        cabinetMetier.supprimerConsultation(1);
+        cabinetMetier.supprimerPatient(2);
+        cabinetMetier.supprimerMedecin(2);
     }
 }

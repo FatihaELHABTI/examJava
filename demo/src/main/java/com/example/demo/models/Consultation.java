@@ -8,36 +8,31 @@ public class Consultation {
     private int idPatient;
     private int idMedecin;
     private LocalDate dateConsultation;
-    private LocalTime heureConsultation;
-    private String motifConsultation;
-    private String observations;
+    
 
     // Constructeur complet
     public Consultation(int idConsultation, int idPatient, int idMedecin, 
-                        LocalDate dateConsultation, LocalTime heureConsultation, 
-                        String motifConsultation, String observations) {
+                        LocalDate dateConsultation) {
         this.idConsultation = idConsultation;
         this.idPatient = idPatient;
         this.idMedecin = idMedecin;
         this.dateConsultation = dateConsultation;
-        this.heureConsultation = heureConsultation;
-        this.motifConsultation = motifConsultation;
-        this.observations = observations;
+        
     }
 
-    // Constructeur sans idConsultation
-    public Consultation(LocalDate dateConsultation, LocalTime heureConsultation, 
-                        String motifConsultation, String observations, 
+    // Constructeur sans idConsultation (pour création automatique)
+    public Consultation(LocalDate dateConsultation, 
                         int idPatient, int idMedecin) {
         this.dateConsultation = dateConsultation;
-        this.heureConsultation = heureConsultation;
-        this.motifConsultation = motifConsultation;
-        this.observations = observations;
         this.idPatient = idPatient;
         this.idMedecin = idMedecin;
     }
 
+    // Constructeur minimal avec seulement les IDs du patient et du médecin
     public Consultation(int idPatient, int idMedecin) {
+        this.idPatient = idPatient;
+        this.idMedecin = idMedecin;
+        this.dateConsultation = LocalDate.now(); // Date par défaut
     }
 
     // Getters et Setters
@@ -73,41 +68,13 @@ public class Consultation {
         this.dateConsultation = dateConsultation;
     }
 
-    public LocalTime getHeureConsultation() {
-        return heureConsultation;
-    }
-
-    public void setHeureConsultation(LocalTime heureConsultation) {
-        this.heureConsultation = heureConsultation;
-    }
-
-    public String getMotifConsultation() {
-        return motifConsultation;
-    }
-
-    public void setMotifConsultation(String motifConsultation) {
-        this.motifConsultation = motifConsultation;
-    }
-
-    public String getObservations() {
-        return observations;
-    }
-
-    public void setObservations(String observations) {
-        this.observations = observations;
-    }
-
-    // Méthode toString mise à jour
+        // Méthode toString mise à jour
     @Override
     public String toString() {
         return "Consultation{" +
                 "idConsultation=" + idConsultation +
                 ", idPatient=" + idPatient +
                 ", idMedecin=" + idMedecin +
-                ", dateConsultation=" + dateConsultation +
-                ", heureConsultation=" + heureConsultation +
-                ", motifConsultation='" + motifConsultation + '\'' +
-                ", observations='" + observations + '\'' +
                 '}';
     }
 }
